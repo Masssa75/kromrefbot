@@ -27,6 +27,30 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 });
 console.log('Supabase client initialized.');
 
+// --- ADD CONNECTION TEST ---
+async function testSupabaseConnection() {
+    console.log('Running Supabase connection test...');
+    try {
+        // Try to select just one column from a known table (even if empty)
+        const { data, error } = await supabase
+            .from('kol_links') // Use the table you created
+            .select('kol_name', { count: 'exact', head: true }) // Just get the count, efficient
+            .limit(1); // Only need to know if the table can be reached
+
+        if (error) {
+             console.error('!!! Supabase connection test FAILED:', error); // Log the actual error
+         } else {
+             console.log(`Supabase connection test successful. Found count: ${data === null ? 'null (table likely empty)' : JSON.stringify(data)} (Count from header not directly available this way, but success means connection OK)`);
+             // If you SELECT a column like 'kol_name', data would be an array e.g., [{kol_name: 'someName'}] or []
+             console.log('Connection test indicates credentials and network path are likely OK.');
+         }
+     } catch (err) {
+         console.error('!!! Supabase connection test FAILED (exception):', err);
+     }
+ }
+ testSupabaseConnection(); // <<< Run the test function immediately
+ // --- END CONNECTION TEST ---
+
 // --- Bot Initialization ---
 console.log('Starting KROM Referral Bot...');
 const bot = new TelegramBot(token, {
