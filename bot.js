@@ -119,7 +119,9 @@ bot.onText(/\/createlink (.+)/, async (msg, match) => {
             .insert([{ link_url: inviteLink.invite_link, kol_name: kolName }]);
 
         if (dbError) {
-            console.error('Supabase insert error (kol_links):', dbError.message);
+            console.error('--- FULL Supabase Insert Error Object (kol_links) ---');
+            console.error(dbError); // Log the whole object
+            console.error('--- END Supabase Error Object ---');
             // Attempt to revoke the created link if DB save failed? Complex. Log and notify admin is simpler.
             return bot.sendMessage(chatId, `❌ Error saving link to database for "${kolName}". Link was created but not tracked. Please report this.`);
         }
