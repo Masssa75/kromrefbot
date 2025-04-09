@@ -114,9 +114,13 @@ bot.onText(/\/createlink (.+)/, async (msg, match) => {
         console.log(`Successfully created TG link for ${kolName}: ${inviteLink.invite_link}`);
 
         // 2. Save to Supabase
-        const { error: dbError } = await supabase
+        const dataToInsert = { link_url: inviteLink.invite_link, kol_name: kolName };
+
+            console.log('Attempting Supabase insert with:', JSON.stringify(dataToInsert));
+
+            const { error: dbError } = await supabase
             .from('kol_links')
-            .insert([{ link_url: inviteLink.invite_link, kol_name: kolName }]);
+            .insert([dataToInsert]); // Ensure data is in an array
 
         if (dbError) {
             console.error('--- FULL Supabase Insert Error Object (kol_links) ---');
